@@ -28,7 +28,7 @@ ENV RAILS_ENV=production
 ENV RAILS_SERVE_STATIC_FILES=true
 # Redirect Rails log to STDOUT for Cloud Run to capture
 ENV RAILS_LOG_TO_STDOUT=true
-ENV SECRET_KEY_BASE=<YOUR SECRET_KEY_BASE>
+ENV SECRET_KEY_BASE=0872527ec6cb6b40fcfa18145412acc218fb8e97339fa7878016d88f821b39829ac4418d6143c6fc9bfa78ffbd023db92b10f9a584b8436ade52586e8c07bf01
 
 # pre-compile Rails assets with master key
 RUN bundle exec rake assets:precompile

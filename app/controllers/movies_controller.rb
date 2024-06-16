@@ -1,4 +1,20 @@
+# app/controllers/movies_controller.rb
 class MoviesController < ApplicationController
+  def index
+    @all_ratings = Movie.all_ratings
+
+    # Get selected ratings from params, or default to all ratings if none selected
+    if params[:ratings]
+      @ratings_to_show = params[:ratings].keys
+    else
+      @ratings_to_show = @all_ratings
+    end
+
+    @ratings_to_show_hash = @ratings_to_show.map { |rating| [rating, 1] }.to_h
+
+    # Filter movies based on selected ratings
+    @movies = Movie.with_ratings(@ratings_to_show)
+  end
 
   def show
     id = params[:id] # retrieve movie ID from URI route
