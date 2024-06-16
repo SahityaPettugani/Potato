@@ -2,21 +2,20 @@
 class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.all_ratings
-
-    # Get selected ratings from params, or default to all ratings if none selected
-    @ratings_to_show = params[:ratings]&.keys || @all_ratings
-    @ratings_to_show_hash = @ratings_to_show.map { |rating| [rating, 1] }.to_h
-
-    # Get sort column from params
-    @sort_column = params[:sort] || 'title'
-
-    # Highlight the sorted column
-    @title_class = @sort_column == 'title' ? 'hilite bg-warning' : ''
-    @release_date_class = @sort_column == 'release_date' ? 'hilite bg-warning' : ''
-
-    # Fetch movies with filters and sort order
-    @movies = Movie.with_ratings(@ratings_to_show).order(@sort_column)
+    @ratings_to_show = params[:ratings] || session[:ratings] || @all_ratings
+    @sort_by = params[:sort_by] || session[:sort_by] || nil
+        
+    if params[:ratings]
+      session[:ratings] = params[:ratings]
+    end
+    
+    if params[:sort_by]
+      session[:sort_by] = params[:sort_by]
+    end
+    
+    @movies = Movie.with_ratings(@ratings_to_show).order(session[:sort_by])
   end
+  
 
   def show
     id = params[:id] # retrieve movie ID from URI route
