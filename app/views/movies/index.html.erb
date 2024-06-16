@@ -12,12 +12,16 @@
   <%= submit_tag 'Refresh', id: 'ratings_submit', class: 'btn btn-primary' %>
 <% end %>
 
-<table class="table table-striped table-hover">
+<table class="table table-striped table-hover" id="movies">
   <thead>
     <tr>
-      <th id="title_header" style="background-color: yellow;">Movie Title</th>
+      <th>
+        <%= link_to 'Movie Title', movies_path(sort: 'title', ratings: @ratings_to_show_hash), id: 'title_header', class: @title_class %>
+      </th>
+      <th>
+        <%= link_to 'Release Date', movies_path(sort: 'release_date', ratings: @ratings_to_show_hash), id: 'release_date_header', class: @release_date_class %>
+      </th>
       <th>Rating</th>
-      <th>Release Date</th>
       <th>More Info</th>
     </tr>
   </thead>
@@ -25,8 +29,8 @@
     <% @movies.each do |movie| %>
       <tr>
         <td><%= movie.title %></td>
-        <td><%= movie.rating %></td>
         <td><%= movie.release_date %></td>
+        <td><%= movie.rating %></td>
         <td><%= link_to 'More about', movie_path(movie) %></td>
       </tr>
     <% end %>
