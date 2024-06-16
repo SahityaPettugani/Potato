@@ -1,21 +1,4 @@
-# app/controllers/movies_controller.rb
 class MoviesController < ApplicationController
-  def index
-    @all_ratings = Movie.all_ratings
-    @ratings_to_show = params[:ratings] || session[:ratings] || @all_ratings
-    @sort_by = params[:sort_by] || session[:sort_by] || nil
-        
-    if params[:ratings]
-      session[:ratings] = params[:ratings]
-    end
-    
-    if params[:sort_by]
-      session[:sort_by] = params[:sort_by]
-    end
-    
-    @movies = Movie.with_ratings(@ratings_to_show).order(session[:sort_by])
-  end
-  
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -23,8 +6,38 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
+  # def index
+  #   @movies = Movie.all
+  # end
   def index
-    @movies = Movie.all
+    @all_ratings = Movie.all_ratings
+
+    if params[:ratings]
+      @ratings_to_show_hash = params[:ratings]
+    elsif session[:ratings]
+      @ratings_to_show_hash = session[:ratings]
+    else
+      @ratings_to_show_hash = Hash[@all_ratings.map { |rating| [rating, "1"] }]
+    end
+
+    # @ratings_to_show_hash = params[:ratings] || session[:ratings] || {}
+    @ratings_to_show = @ratings_to_show_hash.keys
+
+    @ratings_to_show_hash = Hash[@ratings_to_show.map { |rating| [rating, "1"] }]
+
+    session[:ratings] = @ratings_to_show_hash unless @ratings_to_show_hash.empty?
+    @sort_column = params[:sort] || session[:sort]
+    session[:sort] = @sort_column
+    @movies = if @ratings_to_show.empty?
+                Movie.all
+              else
+                Movie.with_ratings(@ratings_to_show)
+              end
+
+    if @sort_column
+      @movies = @movies.order(@sort_column)
+    end
+
   end
 
   def new
